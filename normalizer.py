@@ -30,7 +30,7 @@ WARN = "\033[1m\033[31m[!]\033[0m "
 
 def display_info(msg):
     ''' Clearline and print message '''
-    sys.stdout.write(chr(27) + '[2K')
+    sys.stdout.write(f'{chr(27)}[2K')
     sys.stdout.write('\r' + INFO + msg)
     sys.stdout.flush()
 
@@ -111,10 +111,8 @@ class Parser(object):
 
     def lazy_readline(self, fp):
         ''' Lazily read line from file until EOF '''
-        data = fp.readline()
-        while data:
+        while data := fp.readline():
             yield data.strip()
-            data = fp.readline()
 
     def save(self, email, user, domain, password):
         ''' Save results of parse_line()  '''
@@ -203,13 +201,13 @@ def main(args):
     args.targets = [
         target for target in args.targets if os.path.exists(target)
     ]
-    if 0 < len(args.targets):
+    if args.targets:
         parser = PARSERS[args.format](
             args.output, args.append, args.skip_prefix, args.skip_suffix,
         )
         parser.parse(args.targets, args.recursive)
     else:
-        print(WARN + "No valid targets found in %s" % args.targets)
+        print(WARN + f"No valid targets found in {args.targets}")
 
 
 if __name__ == '__main__':
